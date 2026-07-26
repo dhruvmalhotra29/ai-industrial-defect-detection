@@ -1,0 +1,19 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+
+# Dataset
+dataset/
+
+# YOLO outputs
+runs/
+
+# Backend
+backend/.env
+backend/uploads/
+
+# Frontend
+frontend/.env
+frontend/node_modules/
+frontend/dist/
