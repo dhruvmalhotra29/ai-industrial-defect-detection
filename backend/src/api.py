@@ -4,6 +4,7 @@ from fastapi.staticfiles import StaticFiles
 from ultralytics import YOLO
 from pathlib import Path
 from dotenv import load_dotenv
+from src.database import SessionLocal, Inspection
 import shutil
 import os
 import cv2
@@ -26,7 +27,7 @@ app.add_middleware(
 
 app.mount("/uploads", StaticFiles(directory=BASE_DIR/"uploads"), name="uploads")
 
-MODEL_PATH = BASE_DIR / "models" / "best.pt"
+MODEL_PATH = BASE_DIR / "models" / "best.onnx"
 
 # Load the model once when the server starts
 model = YOLO(str(MODEL_PATH))
@@ -64,7 +65,39 @@ async def predict(file: UploadFile = File(...)):
 
     predictions = process_image(file_path)
 
+    # Save inspection in PostgreSQL
+    db = SessionLocal()
+
+    try:
+        inspection = Inspection(
+            image_name=file.filename,
+            predictions=predictions
+        )
+
+        db.add(inspection)
+        db.commit()
+        db.refresh(inspection)
+
+    finally:
+        db.close()
+
+
     return {
         "predicted_image": "/uploads/predicted.jpg",
-        "predictions": predictions
+        "predictions": predictions, 
+        "inspection_id": inspection.id
     }
+
+@app.get("/inspections")
+def get_inspections():
+    db = SessionLocal()
+
+    try:
+        inspections = db.query(Inspection).order_by(
+            Inspection.created_at.desc()
+        ).all()
+
+        return inspections
+
+    finally:
+        db.close()

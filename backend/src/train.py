@@ -7,6 +7,7 @@ DATA_YAML = BASE_DIR / "src" / "data.yaml"
 
 # Load a pre trained YOLO model
 model = YOLO("yolov8n.pt")
+models_dir = BASE_DIR / "models"
 
 #Train the model
 model.train(
@@ -26,3 +27,14 @@ models_dir.mkdir(exist_ok=True)
 shutil.copy2(best_model, models_dir / "best.pt")
 
 print("Model copied to:", models_dir / "best.pt")
+
+
+# Export trained model to ONNX
+trained_model = YOLO(str(models_dir / "best.pt"))
+
+trained_model.export(
+    format="onnx",
+    imgsz=640
+)
+
+print("ONNX model exported successfully")
