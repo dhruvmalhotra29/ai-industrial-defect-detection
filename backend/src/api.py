@@ -4,7 +4,7 @@ from fastapi.staticfiles import StaticFiles
 from ultralytics import YOLO
 from pathlib import Path
 from dotenv import load_dotenv
-from src.database import SessionLocal, Inspection
+from src.create_tables import SessionLocal, Inspection
 import shutil
 import os
 import cv2
