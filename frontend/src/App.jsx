@@ -14,6 +14,8 @@ function App() {
   const [predictions, setPredictions] = useState([]);
   const [predictionDone, setPredictionDone] = useState(false);
   const [inspectionTime, setInspectionTime] = useState("");
+  const [error, setError] = useState("");
+  const [invalidFile, setInvalidFile] = useState(false);
 
   const API_URL = import.meta.env.VITE_API_URL;
 
@@ -22,13 +24,42 @@ function App() {
     const file = e.target.files[0];
     
     if(!file) return;
-    
+
+    if (!file.type.startsWith("image/")) {
+        setError("Please select an image file.");
+        setImage(null);
+        setFileName("");
+        setInvalidFile(true);
+        setPreview(null);
+        setResultImage(null);
+        setPredictions([]);
+        setPredictionDone(false);
+        e.target.value = "";
+        return;
+    }
+
+    if (file.size === 0) {
+      setError("The selected file is empty.");
+      setImage(null);
+      setFileName("");
+      setPreview(null);
+      setResultImage(null);
+      setPredictions([]);
+      setPredictionDone(false);
+      setInvalidFile(true);
+      e.target.value = "";
+      return;
+    } 
+
+    setError("");
+
     // Clear previous prediction
     setResultImage(null);
     setPredictions([]);
     setPredictionDone(false);
 
     setImage(file);
+    setInvalidFile(false);
     setFileName(file.name);
     setPreview(URL.createObjectURL(file));
     
@@ -42,6 +73,7 @@ function App() {
       return;
     }
 
+    setError("");
     setLoading(true);
 
     const formData = new FormData();
@@ -63,6 +95,13 @@ function App() {
 
     } catch (error) {
       console.error(error);
+      if (error.response?.data?.detail) {
+        setError(error.response.data.detail);
+      } else {
+        setError("Something went wrong. Please try again.");
+      }
+
+      setInvalidFile(true);
     }
 
     setLoading(false);
@@ -172,11 +211,17 @@ const downloadReport = () => {
             onChange={handleImageChange}
         />
 
-        <button onClick={handlePredict} disabled={loading}>
+        <button onClick={handlePredict} disabled={loading || invalidFile}>
           {loading ? "Processing...": "Predict"}
         </button>
 
       </div>
+
+      {error && (
+        <div className="error-message">
+          ⚠️ {error}
+        </div>
+      )}
 
       {fileName && (
         <p className="filename">

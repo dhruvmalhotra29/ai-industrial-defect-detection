@@ -18,6 +18,12 @@
     margin-left: 15px;
 }
 
+.controls button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  filter: grayscale(100%);
+}
+
 .page-title {
     font-size: 38px;
     font-weight: 800;
@@ -190,4 +196,17 @@ input[type="file"] {
 
 .download-btn:hover {
     background-color: #0b5ed7;
+}
+
+.error-message {
+  margin: 12px auto 0;
+  padding: 10px 16px;
+  max-width: 420px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 500;
+  color: #b42318;
+  background: #fef3f2;
+  border: 1px solid #fecdca;
+  border-radius: 8px;
 }
