@@ -126,7 +126,7 @@ async def predict(file: UploadFile = File(...)):
         )
 
         db.add(inspection)
-        raise SQLAlchemyError("Test database failure")
+        #raise SQLAlchemyError("Test database failure")
         db.commit()
         db.refresh(inspection)
 
