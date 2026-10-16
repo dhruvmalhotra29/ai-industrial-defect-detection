@@ -73,6 +73,11 @@ function App() {
       return;
     }
 
+    if (predictionDone) {
+      setError("Please select a new image to predict.");
+      return;
+    }
+
     setError("");
     setLoading(true);
 
