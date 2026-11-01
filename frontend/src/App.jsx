@@ -25,6 +25,21 @@ function App() {
     
     if(!file) return;
 
+    if (file.size > 5 * 1024 * 1024) {
+      setError("File size cannot exceed 5 MB.");
+      setImage(null);
+      setFileName("");
+      setPreview(null);
+      setResultImage(null);
+      setPredictions([]);
+      setPredictionDone(false);
+      setInvalidFile(true);
+      e.target.value = "";
+      return;
+    }
+    
+    
+
     if (!file.type.startsWith("image/")) {
         setError("Please select an image file.");
         setImage(null);
@@ -100,7 +115,13 @@ function App() {
 
     } catch (error) {
       console.error(error);
-      if (error.response?.data?.detail) {
+      if(error.response?.status === 429) {
+        setError("Too many requests. Please try again later.")
+      }
+      else if(erroor.response?.status === 413) {
+        setError("File size cannot exceed 5 MB")
+      }
+      else if (error.response?.data?.detail) {
         setError(error.response.data.detail);
       } else {
         setError("Something went wrong. Please try again.");
