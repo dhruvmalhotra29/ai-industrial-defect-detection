@@ -118,7 +118,7 @@ function App() {
       if(error.response?.status === 429) {
         setError("Too many requests. Please try again later.")
       }
-      else if(erroor.response?.status === 413) {
+      else if(error.response?.status === 413) {
         setError("File size cannot exceed 5 MB")
       }
       else if (error.response?.data?.detail) {
