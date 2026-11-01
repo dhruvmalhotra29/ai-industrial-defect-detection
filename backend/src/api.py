@@ -2,6 +2,10 @@ from fastapi import FastAPI, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi import HTTPException
+from fastapi import Request
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.util import get_remote_address
+from slowapi.errors import RateLimitExceeded
 from ultralytics import YOLO
 from pathlib import Path
 from dotenv import load_dotenv
@@ -20,6 +24,15 @@ load_dotenv(BASE_DIR / ".env")
 FRONTEND_URL = os.getenv("FRONTEND_URL")
 
 app = FastAPI()
+
+limiter = Limiter(key_func=get_remote_address)
+
+app.state.limiter = limiter
+
+app.add_exception_handler(
+    RateLimitExceeded,
+    _rate_limit_exceeded_handler
+)
 
 app.add_middleware(
     CORSMiddleware,
@@ -63,7 +76,20 @@ def process_image(file_path, prediction_filename):
     return predictions
 
 @app.post("/predict")
-async def predict(file: UploadFile = File(...)):
+@limiter.limit("10/minute")
+async def predict(request : Request, file: UploadFile = File(...)):
+
+    MAX_FILE_SIZE = 5 * 1024 * 1024  # 5 MB
+
+    file.file.seek(0, 2)
+    file_size = file.file.tell()
+    file.file.seek(0)
+
+    if file_size > MAX_FILE_SIZE:
+        raise HTTPException(
+            status_code=413,
+            detail="File size cannot exceed 5 MB"
+        )
 
     allowed_types = {
         "image/jpeg",
@@ -148,7 +174,8 @@ async def predict(file: UploadFile = File(...)):
     }
 
 @app.get("/inspections")
-def get_inspections():
+@limiter.limit("30/minute")
+def get_inspections(request : Request):
     db = SessionLocal()
 
     try:
