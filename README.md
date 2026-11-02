@@ -10,6 +10,8 @@ An end-to-end computer vision system for automated industrial surface defect ins
 - ONNX model export for production inference
 - ONNX Runtime CPU inference
 - Image upload and annotated predictions
+- Image upload validation (file size, MIME type, and image integrity)
+- API rate limiting for prediction and inspection history endpoints
 - Defect confidence scores and bounding boxes
 - Automated PDF inspection reports
 - PostgreSQL-based inspection history

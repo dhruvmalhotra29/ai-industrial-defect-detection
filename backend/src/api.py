@@ -125,7 +125,7 @@ async def predict(request : Request, file: UploadFile = File(...)):
         )
 
 
-    file.file.seek(0);
+    file.file.seek(0)
 
     unique_filename = f"{uuid.uuid4()}_{file.filename}"
     file_path = BASE_DIR / "uploads" / unique_filename
