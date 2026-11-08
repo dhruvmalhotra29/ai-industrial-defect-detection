@@ -148,6 +148,8 @@ async def predict(request : Request, file: UploadFile = File(...)):
     try:
         inspection = Inspection(
             image_name=file.filename,
+            original_image=unique_filename,
+            predicted_image=prediction_filename,
             predictions=predictions
         )
 

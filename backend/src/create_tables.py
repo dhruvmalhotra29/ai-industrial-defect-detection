@@ -23,6 +23,8 @@ class Inspection(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     image_name = Column(String)
+    original_image = Column(String, nullable=True)
+    predicted_image = Column(String, nullable=True)
     predictions = Column(JSON)
     created_at = Column(DateTime, default=datetime.utcnow)
 
