@@ -53,7 +53,7 @@ os.makedirs(BASE_DIR / "uploads", exist_ok=True)
 
 @app.get("/")
 @limiter.limit("10/minute")
-def home():
+def home(request : Request):
     return {"message": "Industrial Defect Detection API is running!"}
 
 def process_image(file_path, prediction_filename):
