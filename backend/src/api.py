@@ -52,6 +52,7 @@ model = YOLO(str(MODEL_PATH))
 os.makedirs(BASE_DIR / "uploads", exist_ok=True)
 
 @app.get("/")
+@limiter.limit("10/minute")
 def home():
     return {"message": "Industrial Defect Detection API is running!"}
 
@@ -177,15 +178,27 @@ async def predict(request : Request, file: UploadFile = File(...)):
 
 @app.get("/inspections")
 @limiter.limit("30/minute")
-def get_inspections(request : Request):
+def get_inspections(request: Request):
     db = SessionLocal()
 
     try:
         inspections = db.query(Inspection).order_by(
             Inspection.created_at.desc()
-        ).all()
+        ).limit(5).all()
 
-        return inspections
+        base_url = str(request.base_url).rstrip("/")
+
+        return [
+            {
+                "id": item.id,
+                "image_name": item.image_name,
+                "original_image": f"{base_url}/uploads/{item.original_image}" if item.original_image else None,
+                "predicted_image": f"{base_url}/uploads/{item.predicted_image}" if item.predicted_image else None,
+                "predictions": item.predictions,
+                "created_at": item.created_at
+            }
+            for item in inspections
+        ]
 
     finally:
         db.close()
