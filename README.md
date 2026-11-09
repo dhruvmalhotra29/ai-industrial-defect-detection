@@ -152,6 +152,18 @@ Sensitive environment variables are excluded from version control.
 
 ---
 
+## API Endpoints
+
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | / | Check API health |
+| POST | /predict | Upload an image and detect defects |
+| GET | /inspections | Retrieve inspection history |
+
+## Future Improvements
+
+- Configure HTTPS for secure communication between the frontend and backend.
+
 ## Author
 
 - [@dhruvmalhotra29](https://github.com/dhruvmalhotra29)
