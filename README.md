@@ -23,9 +23,9 @@ An end-to-end computer vision system for automated industrial surface defect ins
 - **Machine Learning:** Python, YOLOv8, Ultralytics, OpenCV
 - **Model Serving:** ONNX, ONNX Runtime
 - **Backend:** FastAPI, SQLAlchemy
-- **Database:** PostgreSQL
+- **Database:** PostgreSQL, Neon
 - **Frontend:** React, Vite
-- **Deployment:** Docker, Google Cloud Run
+- **Deployment:** AWS EC2 (Backend), AWS S3 (Frontend)
 
 ## Architecture
 
@@ -73,6 +73,18 @@ Defect Detection
 ```
 
 ONNX Runtime enables CPU-based model inference while separating the training environment from the production inference environment.
+
+## Dataset
+
+The model is trained using the [NEU Surface Defect Database (NEU-DET)](https://www.kaggle.com/datasets/kaustubhdikshit/neu-surface-defect-database), available on Kaggle.
+
+The dataset contains six categories of steel surface defects:
+- Crazing
+- Inclusion
+- Patches
+- Pitted Surface
+- Rolled-in Scale
+- Scratches
 
 ## Run Locally (Optional)
 
@@ -134,9 +146,9 @@ Sensitive environment variables are excluded from version control.
 
 ## Demo
 
-**Project Walkthrough Video:** Coming Soon
+**Project Walkthrough Video:** [Watch Here](https://drive.google.com/drive/folders/1WbuzDOgPToEDvALv8CVddE977xD01p_f?usp=drive_link)
 
-**Live Application:** Coming Soon
+**Live Application:** [Try it here](http://industrial-defect-frontend-154560316129-ap-south-1-an.s3-website.ap-south-1.amazonaws.com/)
 
 ---
 
